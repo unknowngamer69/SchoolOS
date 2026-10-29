@@ -14,6 +14,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtGuard, RolesGuard } from '../auth/guard';
 import { GetUser, Roles } from '../auth/decorators';
 import { type User } from '../../generated/prisma';
+import { GeneralOkResponseDto } from '../common/dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -73,6 +74,7 @@ export class StudentsController {
     summary: 'Delete student details',
     description: 'Delete details of a particular student',
   })
+  @ApiResponse({ type: GeneralOkResponseDto, status: 200 })
   @Roles(['school_admin'])
   @Delete(':id')
   remove(@Param('id') id: string, @GetUser() user: User) {

@@ -31,12 +31,27 @@ export class StudentsService {
       schoolId,
       password,
     } = createStudentDto;
-    const school = await this.prisma.school.findFirst({
-      where: { id: schoolId, users: { some: { id: user.id } } },
-      select: { id: true },
-    });
+    const [school, guardian, studentClass] = await Promise.all([
+      this.prisma.school.findFirst({
+        where: {
+          id: schoolId,
+          users: { some: { id: user.id } },
+        },
+        select: { id: true },
+      }),
+      this.prisma.guardian.findFirst({
+        where: { id: guardianId, user: { schoolId } },
+        select: { id: true },
+      }),
+      this.prisma.class.findFirst({
+        where: { id: classId, schoolId },
+        select: { id: true },
+      }),
+    ]);
 
     if (!school) throw new NotFoundException('School not found');
+    if (!guardian) throw new NotFoundException('Guardian not found');
+    if (!studentClass) throw new NotFoundException('Class not found');
 
     const loginEmail =
       createStudentDto.loginEmail ||
@@ -84,17 +99,18 @@ export class StudentsService {
       where: { user: { schoolId: user.schoolId } },
       include: { user: true },
     });
-    if (students.length)
+    if (students.length === 0)
       throw new NotFoundException('No students registered yet');
     return students;
   }
 
-  async findOne(id: string, user: User) {
+  async findOne(id: string, user: User): Promise<StudentResponseDto> {
     const student = await this.prisma.student.findUnique({
       where: { id, user: { schoolId: user.schoolId } },
+      include: { user: true },
     });
     if (!student) throw new NotFoundException('Student not found');
-    return `This action returns a #${id} student`;
+    return student;
   }
 
   async update(
@@ -131,8 +147,8 @@ export class StudentsService {
         dateOfBirth,
         gender,
         bloodGroup,
-        class: { connect: { id: classId } },
-        guardian: { connect: { id: guardianId } },
+        class: { update: { id: classId } },
+        guardian: { update: { id: guardianId } },
         user: {
           update: { firstName, lastName, email: loginEmail, passwordHash },
         },
@@ -147,7 +163,8 @@ export class StudentsService {
     });
     if (!student) throw new NotFoundException('Student not found');
 
-    await this.prisma.student.delete({ where: { id } });
+    await this.prisma.user.delete({ where: { id: student.userId } });
+
     return { messages: 'Student Details deleted' };
   }
 }

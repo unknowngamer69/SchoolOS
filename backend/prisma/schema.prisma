@@ -46,7 +46,7 @@ model User {
 
   role UserRole
 
-  school   School    @relation(fields: [schoolId], references: [id])
+  school   School    @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   schoolId String
   staff    Staff?
   student  Student?
@@ -55,6 +55,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([schoolId])
   @@map("users")
 }
 
@@ -66,16 +67,20 @@ model Class {
   roomLocation  String
   classCapacity Int
 
-  students      Student[]
-  assignedStaff Staff        @relation(fields: [staffId], references: [id])
+  students Student[]
+
+  assignedStaff Staff  @relation(fields: [staffId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   staffId       String
-  school        School       @relation(fields: [schoolId], references: [id])
-  schoolId      String
-  attendances   Attendance[]
+
+  school      School       @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  schoolId    String
+  attendances Attendance[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([staffId])
+  @@index([schoolId])
   @@map("classes")
 }
 
@@ -86,7 +91,7 @@ model Staff {
   phoneNumber String
 
   userId  String  @unique
-  user    User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   classes Class[]
 
   createdAt DateTime @default(now())
@@ -104,17 +109,22 @@ model Student {
   bloodGroup  String
   address     String
 
-  guardian    Guardian     @relation(fields: [guardianId], references: [id])
-  guardianId  String
-  class       Class        @relation(fields: [classId], references: [id])
-  classId     String
-  userId      String       @unique
-  user        User         @relation(fields: [userId], references: [id])
+  guardian   Guardian @relation(fields: [guardianId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  guardianId String
+
+  class   Class  @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  classId String
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
   attendances Attendance[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([guardianId])
+  @@index([classId])
   @@map("students")
 }
 
@@ -125,8 +135,9 @@ model Guardian {
   relationship GuardianRelationship
 
   students Student[]
-  userId   String    @unique
-  user     User      @relation(fields: [userId], references: [id])
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onUpdate: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,12 +153,13 @@ model Announcement {
   targetAudience AnnouncementTargetAudience @default(whole_school)
   priority       AnnouncementPriority
 
-  school   School @relation(fields: [schoolId], references: [id])
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   schoolId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([schoolId])
   @@map("announcements")
 }
 
@@ -157,16 +169,21 @@ model Attendance {
   status AttendanceStatus
   note   String?
 
-  student   Student @relation(fields: [studentId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   studentId String
-  class     Class   @relation(fields: [classId], references: [id])
-  classId   String
-  school    School  @relation(fields: [schoolId], references: [id])
-  schoolId  String
+
+  class   Class  @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  classId String
+
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  schoolId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([studentId])
+  @@index([classId])
+  @@index([schoolId])
   @@map("attendances")
 }
 
@@ -177,7 +194,7 @@ model AcademicSession {
   startData DateTime
   endData   DateTime
 
-  school   School @relation(fields: [schoolId], references: [id])
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   schoolId String
 
   academicTerms AcademicTerm[]
@@ -185,6 +202,7 @@ model AcademicSession {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([schoolId])
   @@map("academicSessions")
 }
 
@@ -195,12 +213,13 @@ model AcademicTerm {
   startData DateTime
   endData   DateTime
 
-  academicSession   AcademicSession @relation(fields: [academicSessionId], references: [id])
+  academicSession   AcademicSession @relation(fields: [academicSessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   academicSessionId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([academicSessionId])
   @@map("academicTerms")
 }
 

@@ -17,6 +17,6 @@ export class StaffBaseResponseDto implements Staff {
   updatedAt!: Date;
 }
 export class StaffResponseDto extends StaffBaseResponseDto {
-  @ApiProperty({ type: UserBaseResponseDto })
+  @ApiProperty({ type: () => UserBaseResponseDto })
   user!: UserBaseResponseDto;
 }
