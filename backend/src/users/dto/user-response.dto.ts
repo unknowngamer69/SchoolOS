@@ -18,7 +18,8 @@ type UserWith<R extends UserRole, P> = UserBase & { role: R } & P;
 
 export type UserResponse =
   | UserWith<'student', { student: StudentBaseResponseDto }>
-  | UserWith<StaffRole, { staff: StaffBaseResponseDto }>
+  | UserWith<'teacher', { staff: StaffBaseResponseDto }>
+  | UserWith<'school_admin', { staff: StaffBaseResponseDto }>
   | UserWith<'parent', { guardian: GuardianBaseResponseDto }>
   | UserWith<'root_admin', Record<never, never>>;
 

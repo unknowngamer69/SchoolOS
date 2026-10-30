@@ -75,6 +75,7 @@ model Class {
   school      School       @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   schoolId    String
   attendances Attendance[]
+  subjects    Subject[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -82,6 +83,21 @@ model Class {
   @@index([staffId])
   @@index([schoolId])
   @@map("classes")
+}
+
+model Subject {
+  id String @id @default(uuid())
+
+  code     String          @unique
+  title    String
+  category SubjectCategory @default(core)
+
+  classes Class[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subjects")
 }
 
 model Staff {
@@ -291,4 +307,9 @@ enum AttendanceStatus {
   absent
   late
   excused
+}
+
+enum SubjectCategory {
+  core
+  vocational
 }

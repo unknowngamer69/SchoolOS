@@ -1,18 +1,10 @@
-import {
-  Controller,
-  Get,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-// import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtGuard, RolesGuard } from '../auth/guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ApiUserResponse } from './dto/user-response.dto';
+import { GetUser } from '../auth/decorators';
+import { type User } from '../../generated/prisma';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, RolesGuard)
@@ -20,24 +12,16 @@ import { ApiUserResponse } from './dto/user-response.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'Find the current logged in user' })
   @ApiUserResponse()
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @Get('me')
+  findMe(@GetUser() user: User) {
+    return this.usersService.findMe(user);
   }
-
+  @ApiOperation({ summary: 'Find user by id' })
+  @ApiUserResponse()
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  findOne(@Param('id') id: string, @GetUser() user: User) {
+    return this.usersService.findOne(id, user);
   }
 }

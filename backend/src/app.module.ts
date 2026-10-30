@@ -10,6 +10,7 @@ import { ParentsModule } from './parents/parents.module';
 import { APP_GUARD } from '@nestjs/core';
 import { ClassModule } from './class/class.module';
 import { StaffModule } from './staff/staff.module';
+import { SubjectModule } from './subject/subject.module';
 
 @Module({
   imports: [
@@ -23,18 +24,13 @@ import { StaffModule } from './staff/staff.module';
     PrismaModule,
 
     AuthModule,
-
-    StudentsModule,
-
-    SchoolsModule,
-
     UsersModule,
-
+    StudentsModule,
     ParentsModule,
-
-    ClassModule,
-
     StaffModule,
+    SchoolsModule,
+    ClassModule,
+    SubjectModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

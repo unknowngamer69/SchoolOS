@@ -48,7 +48,6 @@ export default function Session() {
     },
   ]
 
-  // Pick the data array based on active tab state
   const currentData = activeTab === "Academic Sessions" ? sessionsData : termsData
 
   return (
@@ -68,7 +67,6 @@ export default function Session() {
         </div>
       </div>
 
-      {/* Tab Switcher Buttons */}
       <div className="flex gap-1 bg-zinc-200 p-1 w-[400px] rounded-md">
         <Button 
           variant="ghost" 
