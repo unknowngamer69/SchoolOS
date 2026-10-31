@@ -12,11 +12,13 @@ export class SubjectBaseResponseDto implements Subject {
   @ApiProperty({ enum: $Enums.SubjectCategory })
   category!: $Enums.SubjectCategory;
   @ApiProperty()
+  schoolId!: string;
+  @ApiProperty()
   createdAt!: Date;
   @ApiProperty()
   updatedAt!: Date;
 }
 export class SubjectResponseDto extends SubjectBaseResponseDto {
-  @ApiProperty({ type: ClassBaseResponseDto })
-  classes!: ClassBaseResponseDto;
+  @ApiProperty({ type: [ClassBaseResponseDto] })
+  classes!: ClassBaseResponseDto[];
 }

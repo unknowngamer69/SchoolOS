@@ -11,6 +11,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { ClassModule } from './class/class.module';
 import { StaffModule } from './staff/staff.module';
 import { SubjectModule } from './subject/subject.module';
+import { AcademicSessionModule } from './academic-session/academic-session.module';
+import { AcademicTermModule } from './academic-term/academic-term.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { SubjectModule } from './subject/subject.module';
     SchoolsModule,
     ClassModule,
     SubjectModule,
+    AcademicSessionModule,
+    AcademicTermModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
