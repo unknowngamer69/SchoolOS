@@ -48,7 +48,7 @@ export class AcademicSessionController {
   }
 
   @ApiOperation({ summary: 'Find a particular academic session' })
-  @ApiResponse({ type: [AcademicSessionResponseDto], status: 200 })
+  @ApiResponse({ type: AcademicSessionResponseDto, status: 200 })
   @Get(':id')
   findOne(@Param('id') id: string, @GetUser() user: User) {
     return this.academicSessionService.findOne(id, user);

@@ -232,6 +232,7 @@ model AcademicTerm {
   name      String
   startData DateTime
   endData   DateTime
+  status    AcademicTermStatus @default(active)
 
   academicSession   AcademicSession @relation(fields: [academicSessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   academicSessionId String
@@ -311,6 +312,11 @@ enum AttendanceStatus {
   absent
   late
   excused
+}
+
+enum AcademicTermStatus {
+  active
+  inactive
 }
 
 enum AcademicSessionStatus {
