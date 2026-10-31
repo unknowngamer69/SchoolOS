@@ -70,8 +70,8 @@ export default function People() {
   ]
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="text-xs text-zinc-500 mb-2">
+    <div className="p-8 w-full">
+      <div className="text-xs text-zinc-500 mb-3">
         Academia <span className="mx-1">&gt;</span> Admin <span className="mx-1">&gt;</span>{" "}
         <span className="text-zinc-900 font-medium">Students &amp; Enrollment</span>
       </div>
@@ -94,7 +94,7 @@ export default function People() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="relative w-full sm:w-[380px]">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
+          <Search className="absolute left-3 top-1 h-4 w-4 text-zinc-400" />
           <Input
             type="search"
             placeholder="Search students by name or admission no..."
@@ -131,8 +131,8 @@ export default function People() {
           <div className="col-span-3">STUDENT NAME</div>
           <div className="col-span-2">CLASSROOM</div>
           <div className="col-span-2">PORTAL ACCOUNT</div>
-          <div className="col-span-2">GUARDIAN</div>
-          <div className="col-span-1 text-right">STATUS</div>
+          <div className="col-span-1">GUARDIAN</div>
+          <div className="col-span-1 text-center">STATUS</div>
           <div className="col-span-1 text-right">ACTIONS</div>
         </div>
 
@@ -148,31 +148,31 @@ export default function People() {
                 </span>
               </div>
 
-              <div className="col-span-3 flex flex-col">
+              <div className="col-span-3 flex flex-col pr-2">
                 <span className="font-semibold text-xs text-zinc-900">{item.name}</span>
                 <span className="font-normal text-[11px] text-zinc-500 mt-0.5">{item.genderDob}</span>
               </div>
 
-              <div className="col-span-2">
-                <span className="inline-block px-2 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 rounded text-[11px] font-medium">
+              <div className="col-span-2 pr-2">
+                <span className="inline-block px-2 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 rounded text-[13px] font-medium">
                   {item.classroom}
                 </span>
               </div>
 
-              <div className="col-span-2 flex flex-col">
+              <div className="col-span-2 flex flex-col pr-2">
                 <span className="font-medium text-xs text-zinc-800 truncate">{item.loginEmail}</span>
                 <span className="font-normal text-[11px] text-zinc-400 mt-0.5">{item.passwordHint}</span>
               </div>
 
-              <div className="col-span-2 flex flex-col">
-                <span className="font-medium text-xs text-zinc-800">{item.guardian}</span>
+              <div className="col-span-1 flex flex-col pr-1">
+                <span className="font-medium text-xs text-zinc-800 truncate">{item.guardian}</span>
               </div>
 
-              <div className="col-span-1 flex justify-end">
+              <div className="col-span-1 flex justify-center">
                 <span
                   className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold ${
                     item.status === "Active"
-                      ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                      ? "bg-emerald-800 text-white"
                       : item.status === "Suspended"
                       ? "bg-amber-100 text-amber-800 border border-amber-200"
                       : "bg-zinc-100 text-zinc-600 border border-zinc-200"
