@@ -1,57 +1,55 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { Slot } from "radix-ui";
 
 const buttonVariants = cva(
-  "inline-flex min-h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1b2a52]/30 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4",
+    "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "border-[#0e1316] bg-[#0e1316] text-white hover:bg-[#27313a]",
-        outline: "border-[#e7e5e4] bg-white text-[#202124] hover:bg-[#f7f7f5]",
-        ghost: "border-transparent bg-transparent text-[#454545] hover:bg-[#f4f3f0]",
-        destructive: "border-[#b91c1c] bg-[#b91c1c] text-white hover:bg-[#991b1b]",
-        link: "min-h-0 border-0 bg-transparent p-0 text-[#1b2a52] underline-offset-4 hover:underline",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
+        outline:
+          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10",
-        sm: "h-8 min-h-8 px-3 text-xs",
-        lg: "h-11 px-5",
-        icon: "size-10 min-h-10 p-0",
+       default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9",
+        "icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm": "size-8",
+        "icon-lg": "size-10",
       },
     },
     defaultVariants: { variant: "default", size: "default" },
   },
 );
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot.Root : "button";
+
+  return (
+    <Comp
+    data-slot="button"
+    data-variant={variant}
+    data-size={size}
+    className={cn(buttonVariants({ variant, size, className }))}
+    {...props}
+  />
+  )
 }
-
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const buttonClassName = cn(buttonVariants({ variant, size, className }));
-
-    if (asChild) {
-      const child = React.Children.only(props.children);
-      if (!React.isValidElement(child)) {
-        throw new Error("Button with asChild requires a single React element child.");
-      }
-
-      const childProps = child.props as React.HTMLAttributes<HTMLElement>;
-      return React.cloneElement(child as React.ReactElement<any>, {
-        ...props,
-        ...childProps,
-        className: cn(buttonClassName, childProps.className),
-        ref,
-      });
-    }
-
-    return <button ref={ref} className={buttonClassName} {...props} />;
-  },
-);
-Button.displayName = "Button";
-
-export { Button, buttonVariants };
