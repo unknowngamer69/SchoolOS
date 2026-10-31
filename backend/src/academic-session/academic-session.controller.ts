@@ -9,11 +9,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AcademicSessionService } from './academic-session.service';
-import { CreateAcademicSessionDto, UpdateAcademicSessionDto } from './dto';
+import {
+  AcademicSessionResponseDto,
+  CreateAcademicSessionDto,
+  UpdateAcademicSessionDto,
+} from './dto';
 import { JwtGuard, RolesGuard } from '../auth/guard';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { GetUser, Roles } from '../auth/decorators';
 import { type User } from '../../generated/prisma';
+import { GeneralOkResponseDto } from '../common/dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, RolesGuard)
@@ -23,7 +28,8 @@ export class AcademicSessionController {
     private readonly academicSessionService: AcademicSessionService,
   ) {}
 
-  @ApiOperation({})
+  @ApiOperation({ summary: 'Add a new academic session' })
+  @ApiResponse({ type: AcademicSessionResponseDto, status: 201 })
   @Roles(['school_admin'])
   @Post()
   create(
@@ -33,17 +39,23 @@ export class AcademicSessionController {
     return this.academicSessionService.create(createAcademicSessionDto, user);
   }
 
+  @ApiOperation({ summary: 'Find all academic sessions' })
+  @ApiResponse({ type: [AcademicSessionResponseDto], status: 200 })
   @Roles(['school_admin'])
   @Get()
   findAll(@GetUser() user: User) {
     return this.academicSessionService.findAll(user);
   }
 
+  @ApiOperation({ summary: 'Find a particular academic session' })
+  @ApiResponse({ type: [AcademicSessionResponseDto], status: 200 })
   @Get(':id')
   findOne(@Param('id') id: string, @GetUser() user: User) {
     return this.academicSessionService.findOne(id, user);
   }
 
+  @ApiOperation({ summary: 'Update a particular academic session' })
+  @ApiResponse({ type: AcademicSessionResponseDto, status: 200 })
   @Roles(['school_admin'])
   @Patch(':id')
   update(
@@ -58,6 +70,8 @@ export class AcademicSessionController {
     );
   }
 
+  @ApiOperation({ summary: 'Delete a particular academic session' })
+  @ApiResponse({ type: GeneralOkResponseDto, status: 200 })
   @Roles(['school_admin'])
   @Delete(':id')
   remove(@Param('id') id: string, @GetUser() user: User) {
