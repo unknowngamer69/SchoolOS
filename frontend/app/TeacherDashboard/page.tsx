@@ -1,5 +1,5 @@
-import { Workspace } from "@/components/dashboard/workspace";
+import { Workspace } from "@/components/dashboards/workspace";
 
 export default function TeacherDashboardPage() {
-    return <Dashboard initialRole="Teacher" />;
+    return <Workspace initialRole="Teacher" />;
 }
