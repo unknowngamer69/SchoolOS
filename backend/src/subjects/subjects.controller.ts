@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { SubjectService } from './subject.service';
+import { SubjectService } from './subjects.service';
 import { CreateSubjectDto, SubjectResponseDto, UpdateSubjectDto } from './dto';
 import { JwtGuard, RolesGuard } from '../auth/guard';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -18,7 +18,7 @@ import { GeneralOkResponseDto } from '../common/dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, RolesGuard)
-@Controller('subject')
+@Controller('subjects')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 

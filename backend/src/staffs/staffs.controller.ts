@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { StaffService } from './staff.service';
+import { StaffService } from './staffs.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
 import { JwtGuard, RolesGuard } from '../auth/guard';
@@ -20,7 +20,7 @@ import { GeneralOkResponseDto } from '../common/dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, RolesGuard)
-@Controller('staff')
+@Controller('staffs')
 export class StaffController {
   constructor(private readonly staffService: StaffService) {}
 

@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { ClassService } from './class.service';
+import { ClassService } from './classes.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { JwtGuard, RolesGuard } from '../auth/guard';
@@ -20,7 +20,7 @@ import { GeneralOkResponseDto } from '../common/dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, RolesGuard)
-@Controller('class')
+@Controller('classes')
 export class ClassController {
   constructor(private readonly classService: ClassService) {}
 
