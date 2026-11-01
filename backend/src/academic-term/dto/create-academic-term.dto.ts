@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AcademicTerm } from '../../../generated/prisma';
+import { $Enums, AcademicTerm } from '../../../generated/prisma';
 
 export class CreateAcademicTermDto implements Omit<
   AcademicTerm,
@@ -11,6 +11,8 @@ export class CreateAcademicTermDto implements Omit<
   startData!: Date;
   @ApiProperty()
   endData!: Date;
+  @ApiProperty({ enum: $Enums.AcademicTermStatus, default: 'active' })
+  status!: $Enums.AcademicTermStatus;
   @ApiProperty()
   academicSessionId!: string;
 }
