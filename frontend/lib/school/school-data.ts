@@ -2,6 +2,7 @@
 //Needed to add a features of Announcement, Classwork so need things for it as well
 
 import type { DirectoryRow } from "@/lib/types";
+import { Item } from "radix-ui/accordion";
 
 export type Assignment = {
     id: String;
@@ -31,22 +32,33 @@ export type StudentMark = {
     status: "Draft" | "Submitted" | "Published";
 };
 
+export type Approval = {
+  id: string;
+  title: string;
+  detail: string;
+  status: "Pending" | "Approved" | "Returned";
+};
+
 export type SchoolData = {
-    students: DirectoryRow[];
-    staff: DirectoryRow[];
-    assignments: Assignment[];
-    learningAssignments: LearningAssignment[];
-    marks: StudentMark[];
-    reviewedAssignments: string[];
-    attendance : Record<string, "Present" | "Absent" | "Late">;
-    attendanceByDate?: Record<string, Record<string, "Present" | "Absent" | "Late">>;
-    staffAttendanceByDate?: Record<string, Record<string, "Present" | "Absent" | "Late">>;
-
-    //need things to be added as said in first comment of this file
-
+  students: DirectoryRow[];
+  staff: DirectoryRow[];
+  assignments: Assignment[];
+  learningAssignments: LearningAssignment[];
+  marks: StudentMark[];
+  reviewedAssignments: string[];
+  attendance : Record<string, "Present" | "Absent" | "Late">;
+  attendanceByDate?: Record<string, Record<string, "Present" | "Absent" | "Late">>;
+  staffAttendanceByDate?: Record<string, Record<string, "Present" | "Absent" | "Late">>;
+  approvals: Approval[];
+  //need things to be added as said in first comment of this file
 }; 
 
 export const initialSchoolData: SchoolData = {
+      approvals: [
+    { id: "AP-01", title: "Year 10 mid-term results", detail: "Submitted by Priya Nair · 28 students", status: "Pending" },
+    { id: "AP-02", title: "Sports Day announcement", detail: "For all students and families", status: "Pending" },
+    { id: "AP-03", title: "Year 9 assessment schedule", detail: "Submitted by David Mensah", status: "Approved" },
+  ],
   students: [
     { name: "Maya Sharma", id: "ST-2026-0842", detail: "Year 10 · 10-A", status: "Active" },
     { name: "Daniel Okafor", id: "ST-2026-0839", detail: "Year 10 · 10-A", status: "Active" },
@@ -105,3 +117,21 @@ export const initialSchoolData: SchoolData = {
 
 };
 
+export function updateApproval(data: SchoolData, id: string, status: "Approved" | "Returned"): SchoolData {
+  const approval = data.approvals.find((item) => item.id === id);
+  return {
+    ...data,
+    approvals: data.approvals.map((item) => item.id === id ? { ...item, status } : item),
+    marks: approval?.title.toLowerCase().includes("result") && status === "Approved"
+      ? data.marks.map((mark) => mark.status === "Submitted" ? { ...mark, status: "Published" } : mark)
+      : data.marks,
+  };
+}
+
+export function isSchoolData(value: unknown): value is SchoolData {
+  if (!value || typeof value !== "object") return false;
+  const data = value as Record<string, unknown>;
+  return ["students", "staff", "accounts", "assignments", "learningAssignments", "marks", "reviewedAssignments", "attendance"].every((key) => key in value)
+    && Boolean(data.attendance && typeof data.attendance === "object");
+
+}
