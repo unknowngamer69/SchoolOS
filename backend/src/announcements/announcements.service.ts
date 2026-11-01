@@ -1,11 +1,36 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAnnouncementDto } from './dto/create-announcement.dto';
-import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  AnnouncementResponseDto,
+  CreateAnnouncementDto,
+  UpdateAnnouncementDto,
+} from './dto';
+import { User } from '../../generated/prisma';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AnnouncementsService {
-  create(createAnnouncementDto: CreateAnnouncementDto) {
-    return 'This action adds a new announcement';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(
+    createAnnouncementDto: CreateAnnouncementDto,
+    user: User,
+  ): Promise<AnnouncementResponseDto> {
+    const { content, priority, schoolId, targetAudience, title } =
+      createAnnouncementDto;
+    const school = await this.prisma.school.findUnique({
+      where: { id: schoolId, users: { some: { id: user.id } } },
+    });
+    if (!school) throw new NotFoundException('School not found');
+    const announcement = await this.prisma.announcement.create({
+      data: {
+        content,
+        priority,
+        title,
+        targetAudience,
+        school: { connect: { id: school.id } },
+      },
+    });
+
+    return announcement;
   }
 
   findAll() {

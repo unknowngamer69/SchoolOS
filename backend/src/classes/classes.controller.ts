@@ -17,7 +17,6 @@ import { GetUser, Roles } from '../auth/decorators';
 import { ClassResponseDto } from './dto';
 import { type User } from '../../generated/prisma';
 import { GeneralOkResponseDto } from '../common/dto';
-
 @ApiBearerAuth()
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('classes')
