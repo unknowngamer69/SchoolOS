@@ -1,9 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateAcademicTermDto } from './dto/create-academic-term.dto';
-import { UpdateAcademicTermDto } from './dto/update-academic-term.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from '../../generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
-import { AcademicTermResponseDto } from './dto';
+import {
+  AcademicTermResponseDto,
+  CreateAcademicTermDto,
+  UpdateAcademicTermDto,
+} from './dto';
+import { GeneralOkResponseDto } from '../common/dto';
 
 @Injectable()
 export class AcademicTermService {
@@ -91,7 +98,20 @@ export class AcademicTermService {
     });
   }
 
-  remove(id: string, user: User): Promise<AcademicTermResponseDto> {
-    return `This action removes a #${id} academicTerm`;
+  async remove(id: string, user: User): Promise<GeneralOkResponseDto> {
+    const academicTerm = await this.prisma.academicTerm.findUnique({
+      where: { id, academicSession: { schoolId: user.schoolId } },
+    });
+
+    if (!academicTerm) throw new NotFoundException('Academic term not found');
+
+    if (academicTerm.status === 'active')
+      throw new BadRequestException(
+        "You can't delete an academic term that is active",
+      );
+
+    await this.prisma.academicTerm.delete({ where: { id } });
+
+    return { messages: 'Academic term deleted successfully' };
   }
 }

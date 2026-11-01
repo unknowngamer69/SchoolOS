@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateClassDto, ClassResponseDto, UpdateClassDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '../../generated/prisma';
@@ -83,6 +87,15 @@ export class ClassService {
       where: { id, schoolId: user.schoolId },
     });
     if (!studentClass) throw new NotFoundException('Class not found');
+
+    const assignedStaff = await this.prisma.staff.findUnique({
+      where: { id: staffId, user: { role: 'teacher' } },
+    });
+
+    if (!assignedStaff)
+      throw new BadRequestException(
+        'Assigned  staff does not exist or is not a teacher',
+      );
 
     return await this.prisma.class.update({
       where: { id },

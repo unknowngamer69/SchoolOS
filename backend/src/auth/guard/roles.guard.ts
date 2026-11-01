@@ -2,7 +2,6 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { Roles } from '../decorators/roles.decorator';
-
 import { Express } from 'express';
 import { User } from '../../../generated/prisma';
 

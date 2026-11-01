@@ -25,7 +25,7 @@ export class ParentsController {
   constructor(private readonly parentsService: ParentsService) {}
 
   @ApiOperation({ summary: 'Add a new parent' })
-  @ApiResponse({ type: GuardianResponseDto, status: 200 })
+  @ApiResponse({ type: GuardianResponseDto, status: 201 })
   @Roles(['school_admin'])
   @Post()
   create(@Body() createParentDto: CreateParentDto, @GetUser() user: User) {

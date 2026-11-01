@@ -104,6 +104,15 @@ export class StudentsService {
     return students;
   }
 
+  async findMyStudents(user: User): Promise<StudentResponseDto[]> {
+    const students = await this.prisma.student.findMany({
+      where: { user: { schoolId: user.schoolId }, class: { staffId: user.id } },
+      include: { user: true },
+    });
+    if (students.length === 0) throw new NotFoundException('No students found');
+    return students;
+  }
+
   async findOne(id: string, user: User): Promise<StudentResponseDto> {
     const student = await this.prisma.student.findUnique({
       where: { id, user: { schoolId: user.schoolId } },

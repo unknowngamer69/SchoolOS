@@ -17,8 +17,7 @@ import { type User } from '../../generated/prisma';
 import { GeneralOkResponseDto } from '../common/dto';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, RolesGuard)
 @Controller('students')
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
@@ -43,6 +42,16 @@ export class StudentsController {
   @Get()
   findAll(@GetUser() user: User) {
     return this.studentsService.findAll(user);
+  }
+
+  @ApiOperation({
+    summary: 'Get student details in a my class as a teacher',
+  })
+  @ApiResponse({ type: [StudentResponseDto], status: 200 })
+  @Roles(['teacher'])
+  @Get('me')
+  findMyStudents(@GetUser() user: User) {
+    return this.studentsService.findMyStudents(user);
   }
 
   @ApiOperation({
