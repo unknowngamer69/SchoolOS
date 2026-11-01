@@ -78,9 +78,7 @@ export class AcademicSessionService {
     if (!academicSession)
       throw new NotFoundException('Academic session not found');
 
-    if (!status) return academicSession;
-
-    if (academicSession.status === status) return academicSession;
+    if (!status || academicSession.status === status) return academicSession;
 
     if (status !== 'active')
       throw new BadRequestException(
